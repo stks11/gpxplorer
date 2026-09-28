@@ -11,6 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapManager {
+    private static final double TILE_SIZE = 256;
+    private static final double FIT_PADDING = 0.08;
+    private static final double MIN_FIT_ZOOM = 2;
+    private static final double MAX_FIT_ZOOM = 18;
 
     private final MapView mapView;
     private final List<RouteLayer> routeLayers = new ArrayList<>();
@@ -49,6 +53,14 @@ public class MapManager {
         return selectSegments.getSelectedSegments();
     }
 
+    public SegmentList getAllSegments() {
+        SegmentList segmentList = new SegmentList();
+        for (RouteLayer layer : routeLayers) {
+            segmentList.add(layer.getRoute());
+        }
+        return segmentList;
+    }
+
     public List<RouteLayer> getSelectedLayers() {
         return selectSegments.getSelectedLayers();
     }
@@ -80,6 +92,58 @@ public class MapManager {
         }
         selectSegments.clear();
         reindexLayers();
+    }
+
+    public void zoomToSegments(SegmentList segments) {
+        double minLat = Double.POSITIVE_INFINITY;
+        double maxLat = Double.NEGATIVE_INFINITY;
+        double minLon = Double.POSITIVE_INFINITY;
+        double maxLon = Double.NEGATIVE_INFINITY;
+        for (PointsList segment : segments) {
+            for (Point point : segment) {
+                minLat = Math.min(minLat, point.lat());
+                maxLat = Math.max(maxLat, point.lat());
+                minLon = Math.min(minLon, point.lon());
+                maxLon = Math.max(maxLon, point.lon());
+            }
+        }
+        if (minLat == Double.POSITIVE_INFINITY) {
+            return;
+        }
+
+        double width = mapView.getWidth() > 0 ? mapView.getWidth() : 800;
+        double height = mapView.getHeight() > 0 ? mapView.getHeight() : 600;
+        double usableWidth = width * (1 - 2 * FIT_PADDING);
+        double usableHeight = height * (1 - 2 * FIT_PADDING);
+
+        double lonFraction = (maxLon - minLon) / 360.0;
+        double latFraction = (mercatorY(maxLat) - mercatorY(minLat)) / (2 * Math.PI);
+        double zoomLon = lonFraction > 0 ? log2(usableWidth / (TILE_SIZE * lonFraction)) : MAX_FIT_ZOOM;
+        double zoomLat = latFraction > 0 ? log2(usableHeight / (TILE_SIZE * latFraction)) : MAX_FIT_ZOOM;
+        double zoom = Math.floor(Math.min(zoomLon, zoomLat));
+        zoom = Math.max(MIN_FIT_ZOOM, Math.min(MAX_FIT_ZOOM, zoom));
+
+        double centerLat = inverseMercatorY((mercatorY(minLat) + mercatorY(maxLat)) / 2);
+        double centerLon = (minLon + maxLon) / 2;
+
+        mapView.setZoom(zoom);
+        mapView.setCenter(new MapPoint(centerLat, centerLon));
+        for (RouteLayer layer : routeLayers) {
+            layer.refresh();
+        }
+    }
+
+    private static double mercatorY(double lat) {
+        double radians = Math.toRadians(lat);
+        return Math.log(Math.tan(Math.PI / 4 + radians / 2));
+    }
+
+    private static double inverseMercatorY(double y) {
+        return Math.toDegrees(2 * Math.atan(Math.exp(y)) - Math.PI / 2);
+    }
+
+    private static double log2(double value) {
+        return Math.log(value) / Math.log(2);
     }
 
     private void centerOnRoute(PointsList route) {

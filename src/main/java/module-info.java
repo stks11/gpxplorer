@@ -13,6 +13,8 @@ module pl.gpxplorer {
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
     requires com.google.gson;
+    requires java.sql;
+    requires org.postgresql.jdbc;
 
     opens pl.gpxplorer to javafx.fxml;
     exports pl.gpxplorer;

@@ -61,6 +61,15 @@ public class RouteLayer extends MapLayer {
         });
     }
 
+    @Override
+    protected void initialize() {
+        markDirty();
+    }
+
+    public void refresh() {
+        markDirty();
+    }
+
     private void updateStyle() {
         polyline.setStroke(selected ? SELECTED_COLOR : defaultColor);
     }

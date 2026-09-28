@@ -1,0 +1,21 @@
+services:
+  postgis:
+    image: postgis/postgis:17-3.5
+    container_name: gpxplorer-postgis
+    environment:
+      POSTGRES_DB: gpxplorer
+      POSTGRES_USER: gpxplorer
+      POSTGRES_PASSWORD: gpxplorer
+    ports:
+      - "5433:5432"
+    volumes:
+      - gpxplorer-data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gpxplorer -d gpxplorer"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  gpxplorer-data:

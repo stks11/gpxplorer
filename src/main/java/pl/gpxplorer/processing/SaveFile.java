@@ -47,9 +47,15 @@ public class SaveFile {
         try {
             writer.write("    <trkseg>\n");
             for (Point point : pointsList) {
-                writer.write(String.format(
-                        "      <trkpt lat=\"%s\" lon=\"%s\"/>%n",
-                        point.lat(), point.lon()));
+                if (point.hasElevation()) {
+                    writer.write(String.format(
+                            "      <trkpt lat=\"%s\" lon=\"%s\"><ele>%s</ele></trkpt>%n",
+                            point.lat(), point.lon(), point.ele()));
+                } else {
+                    writer.write(String.format(
+                            "      <trkpt lat=\"%s\" lon=\"%s\"/>%n",
+                            point.lat(), point.lon()));
+                }
             }
             writer.write("    </trkseg>\n");
         } catch (IOException e) {

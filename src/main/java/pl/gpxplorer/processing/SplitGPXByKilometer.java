@@ -87,7 +87,8 @@ public class SplitGPXByKilometer {
         double ratio = meterDiff/meters;
         double lat = p1.lat() + ratio * (p2.lat() - p1.lat());
         double lon =  p1.lon() + ratio * (p2.lon() - p1.lon());
+        double ele = p1.ele() + ratio * (p2.ele() - p1.ele());
 
-        return new Point(lat,lon);
+        return new Point(lat,lon,ele);
     }
 }

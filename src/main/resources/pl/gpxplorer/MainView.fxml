@@ -27,7 +27,16 @@
                   <Button fx:id="clear" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onClear" prefHeight="44.0" style="-fx-background-color: #3b556d; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Clear map" />
                   <Button fx:id="save" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSave" prefHeight="44.0" style="-fx-background-color: #3b556d; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Save file" />
                   <Button fx:id="fill" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onFill" prefHeight="44.0" style="-fx-background-color: #3b556d; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Fill gap" />
+                  <Button fx:id="elevation" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onElevation" prefHeight="44.0" style="-fx-background-color: #3b556d; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Elevation profile" />
                   <Button fx:id="clearselection" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onClearSelection" prefHeight="44.0" style="-fx-background-color: #3b556d; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Clear Selection" />
+               </children>
+            </VBox>
+            <Separator />
+            <VBox spacing="10.0">
+               <children>
+                  <Label text="Database" textFill="#243140" />
+                  <Button fx:id="savedb" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSaveToDb" prefHeight="44.0" style="-fx-background-color: #2f6b5a; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Save to database" />
+                  <Button fx:id="loaddb" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onLoadFromDb" prefHeight="44.0" style="-fx-background-color: #2f6b5a; -fx-background-radius: 10; -fx-text-fill: #fff8ee; -fx-font-size: 13px; -fx-font-weight: 700;" text="Load from database" />
                </children>
             </VBox>
             <Separator />

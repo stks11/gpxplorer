@@ -1,6 +1,7 @@
 package pl.gpxplorer.parsing;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -25,17 +26,28 @@ public class Parser {
             NodeList list = doc.getElementsByTagName("trkpt");
             for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
-//                System.out.println(node.getAttributes().getNamedItem("lat") + " " + node.getAttributes().getNamedItem("lon"));
                 String latStr = node.getAttributes().getNamedItem("lat").getTextContent();
                 String lonStr = node.getAttributes().getNamedItem("lon").getTextContent();
                 double lat = Double.parseDouble(latStr);
                 double lon = Double.parseDouble(lonStr);
-                Point p = new Point(lat, lon);
+                Point p = new Point(lat, lon, readElevation((Element) node));
                 points.add(p);
             }
         }catch (SAXException | IOException | ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
         return points;
+    }
+
+    private double readElevation(Element trackPoint) {
+        NodeList elevations = trackPoint.getElementsByTagName("ele");
+        if (elevations.getLength() == 0) {
+            return Double.NaN;
+        }
+        try {
+            return Double.parseDouble(elevations.item(0).getTextContent().trim());
+        } catch (NumberFormatException e) {
+            return Double.NaN;
+        }
     }
 }
